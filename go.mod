@@ -1,4 +1,4 @@
-module go-asteroids
+module github.com/jrstinson/go-asteroids
 
 go 1.22.6
 
