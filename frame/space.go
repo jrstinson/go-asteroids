@@ -13,9 +13,8 @@ const UNIVERSE_W int = 6400
 const UNIVERSE_H int = 4800
 
 type Space struct {
-	play_area  *ebiten.Image
-	view_area  *ebiten.Image
-	player_pos *image.Point
+	play_area *ebiten.Image
+	view_area *ebiten.Image
 }
 
 func NewSpace(img_p string, view_s image.Rectangle) *Space {
@@ -41,9 +40,8 @@ func NewSpace(img_p string, view_s image.Rectangle) *Space {
 	view_area := play_area.SubImage(view_area_rect).(*ebiten.Image)
 
 	return &Space{
-		play_area:  play_area,
-		view_area:  view_area,
-		player_pos: &image.Point{UNIVERSE_W / 2, UNIVERSE_H / 2},
+		play_area: play_area,
+		view_area: view_area,
 	}
 }
 
@@ -53,19 +51,11 @@ func (s *Space) Update() {
 func (s *Space) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 
-	screen.DrawImage(s.play_area, op)
+	screen.DrawImage(s.view_area, op)
 }
 
 func (s *Space) Layout(outside_width, outside_height int) (int, int) {
 	return outside_width, outside_height
-}
-
-func (s *Space) GetPlayerPos() *image.Point {
-	return s.player_pos
-}
-
-func (s *Space) SetPlayerPos(p *image.Point) {
-	s.player_pos = p
 }
 
 func (s *Space) GetViewArea() *ebiten.Image {
