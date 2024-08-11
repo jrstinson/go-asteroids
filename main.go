@@ -11,14 +11,10 @@ import (
 	"github.com/jrstinson/go-asteroids/frame"
 )
 
-const GAME_W int = 6400
-const GAME_H int = 4800
+const GAME_W int = 1280
+const GAME_H int = 960
 
 const SHIP_SIZE int = 100
-
-func init() {
-
-}
 
 type Game struct{}
 
@@ -29,16 +25,18 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Asteroids")
-	space := frame.NewSpace("assets/tile.png", image.Rect(0, 0, GAME_W, GAME_H), 0)
+	space := frame.NewSpace("assets/frame.png", image.Rect(0, 0, GAME_W, GAME_H))
+
 	space.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return outsideWidth, outsideHeight
+	return GAME_W, GAME_H
 }
 
 func main() {
 	ebiten.SetWindowTitle("Asteroids!")
+	ebiten.SetWindowSize(GAME_W, GAME_H)
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)
 	}
