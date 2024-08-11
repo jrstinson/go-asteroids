@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
-	"github.com/jrsinson/go-asteroids/frame"
+	"github.com/jrstinson/go-asteroids/frame"
 )
 
 const GAME_W int = 6400
