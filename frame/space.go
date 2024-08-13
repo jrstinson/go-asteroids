@@ -7,6 +7,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+
+	"github.com/jrstinson/go-asteroids/entities"
+	"github.com/jrstinson/go-asteroids/util"
 )
 
 const UNIVERSE_W int = 6400
@@ -15,9 +18,11 @@ const UNIVERSE_H int = 4800
 type Space struct {
 	play_area *ebiten.Image
 	view_area *ebiten.Image
+	origin    image.Point
+	ship      *entities.Ship
 }
 
-func NewSpace(img_p string, view_s image.Rectangle) *Space {
+func NewSpace(img_p string, view_s image.Rectangle, ship *entities.Ship) *Space {
 	img, _, err := ebitenutil.NewImageFromFile(img_p)
 	if err != nil {
 		log.Fatal(err)
@@ -39,9 +44,13 @@ func NewSpace(img_p string, view_s image.Rectangle) *Space {
 
 	view_area := play_area.SubImage(view_area_rect).(*ebiten.Image)
 
+	origin := image.Point{X: UNIVERSE_W / 2, Y: UNIVERSE_H / 2}
+
 	return &Space{
 		play_area: play_area,
 		view_area: view_area,
+		origin:    origin,
+		ship:      ship,
 	}
 }
 
@@ -51,6 +60,46 @@ func (s *Space) Update() {
 func (s *Space) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 
+	op.GeoM.Reset()
+
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
+		// create a vector pointing up with a magnitude of 5
+		// rotate the vector by the angle of the ship
+		// add the vector to origin
+		// set origin to the new point
+
+		v := util.Vector{X: float64(s.origin.X), Y: float64(s.origin.Y) - 10}
+
+		ship := *s.ship
+
+		v = v.RotateAround(ship.GetAngle(), util.Vector{X: float64(s.origin.X), Y: float64(s.origin.Y)})
+
+		s.origin = image.Point{X: int(v.X), Y: int(v.Y)}
+
+		// if moving the origin would put any part of the view area outside of the play area, move the ship within the play area
+		if s.origin.X-s.view_area.Bounds().Dx()/2 < 0 {
+			s.origin.X = s.view_area.Bounds().Dx() / 2
+		}
+
+		if s.origin.Y-s.view_area.Bounds().Dy()/2 < 0 {
+			s.origin.Y = s.view_area.Bounds().Dy() / 2
+		}
+
+		if s.origin.X+s.view_area.Bounds().Dx()/2 > s.play_area.Bounds().Dx() {
+			s.origin.X = s.play_area.Bounds().Dx() - s.view_area.Bounds().Dx()/2
+		}
+
+		if s.origin.Y+s.view_area.Bounds().Dy()/2 > s.play_area.Bounds().Dy() {
+			s.origin.Y = s.play_area.Bounds().Dy() - s.view_area.Bounds().Dy()/2
+		}
+
+	}
+
+	view_area_rect := image.Rect(s.origin.X-s.view_area.Bounds().Dx()/2, s.origin.Y-s.view_area.Bounds().Dy()/2, s.origin.X+s.view_area.Bounds().Dx()/2, s.origin.Y+s.view_area.Bounds().Dy()/2)
+
+	if view_area_rect.In(s.play_area.Bounds()) {
+		s.view_area = s.play_area.SubImage(view_area_rect).(*ebiten.Image)
+	}
 	screen.DrawImage(s.view_area, op)
 }
 

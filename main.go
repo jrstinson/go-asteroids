@@ -39,8 +39,9 @@ func main() {
 	ebiten.SetWindowSize(GAME_W, GAME_H)
 	ebiten.SetWindowTitle("Asteroids")
 
-	space := frame.NewSpace("assets/frame.png", image.Rect(0, 0, GAME_W, GAME_H))
 	ship := entities.NewShip("assets/ship.png")
+
+	space := frame.NewSpace("assets/frame.png", image.Rect(0, 0, GAME_W, GAME_H), ship)
 
 	game := &Game{
 		Space: space,

@@ -28,18 +28,17 @@ func NewShip(img_p string) *Ship {
 }
 
 func (s *Ship) Update() {
-
 }
 
 func (s *Ship) Draw(screen *ebiten.Image) {
 	//draw ship at center of screen
 	op := &ebiten.DrawImageOptions{}
 
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		s.angle -= 0.1
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
 		s.angle += 0.1
 	}
 
@@ -56,4 +55,8 @@ func (s *Ship) Draw(screen *ebiten.Image) {
 
 func (s *Ship) Layout(outside_width, outside_height int) (int, int) {
 	return outside_width, outside_height
+}
+
+func (s *Ship) GetAngle() float64 {
+	return s.angle
 }
